@@ -1,0 +1,14 @@
+version: '3'
+services:
+    ha-bridge:
+        image: habridge/ha-bridge-raspberrypi3
+        container_name: ha-bridge
+        network_mode: host
+        # environment:
+        #     - SERVERPORT=80
+        volumes:
+            - /opt/appdata/ha-bridge:/ha-bridge/data
+            - /etc/localtime:/etc/localtime:ro
+            - /etc/timezone:/etc/timezone:ro
+            - /opt/scripts:/scripts
+        restart: unless-stopped

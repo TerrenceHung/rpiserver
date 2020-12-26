@@ -4,7 +4,7 @@ Description=Raspberry Pi Home Server
 [Service]
 User=pi
 
-ExecStart=node /home/pi/Documents/rpiserver/index.js
+ExecStart=node /opt/rpiserver/index.js
 Restart=on-failure
 
 [Install]

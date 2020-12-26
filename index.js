@@ -15,10 +15,11 @@ app.post('/api/steamlink', async (req, res) => {
     if (req.body.action == 'start') {
         let tv;
         try {
-            tv = new smartcast('192.168.0.154', fs.readFileSync('vizio_token'));
+            tv = new smartcast('192.168.0.154', fs.readFileSync(`${__dirname}/vizio_token`));
          } catch (error) {
             console.log(error);
             res.status(StatusCodes.INTERNAL_SERVER_ERROR).send('Could not find Vizio token');
+            return;
         }
 
         const isTvOn = Boolean(await tv.power.currentMode().then(data => data.ITEMS[0].VALUE));
@@ -31,7 +32,7 @@ app.post('/api/steamlink', async (req, res) => {
         tv.input.set('HDMI-2');
 
         console.log('Running Steam Link script');
-        const steamProcess = exec('sh /opt/scripts/start_steam_link.sh', (error, stdout, stderr) => {
+        const steamProcess = exec(`sh ${__dirname}/scripts/start_steam_link.sh`, (error, stdout, stderr) => {
             if (error) {
                 console.error(error);
                 res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error);

@@ -14,3 +14,7 @@ sudo apt install -y nodejs
 sudo apt install -y wmctrl steamlink xdotool
 
 sudo ln -s $(pwd)/scripts /opt/scripts
+
+sudo cp ./rpiserver.service /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable --now rpiserver

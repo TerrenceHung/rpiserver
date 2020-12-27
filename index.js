@@ -13,6 +13,19 @@ app.get('/', (req, res) => res.send('Hello world'));
 
 app.post('/api/steamlink', async (req, res) => {
     if (req.body.action == 'start') {
+        console.log('Running Steam Link script');
+        const steamProcess = exec(`sh ${__dirname}/scripts/start_steam_link.sh`, (error, stdout, stderr) => {
+            if (error) {
+                console.error(error);
+                res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error);
+            } else {
+                res.send('Steam Link is now running');
+            }
+        });
+
+        steamProcess.stdout.pipe(process.stdout);
+        steamProcess.stderr.pipe(process.stderr);
+
         let tv;
         try {
             tv = new smartcast('192.168.0.154', fs.readFileSync(`${__dirname}/vizio_token`));
@@ -30,19 +43,6 @@ app.post('/api/steamlink', async (req, res) => {
 
         console.log('Changing input to Raspberry Pi');
         tv.input.set('HDMI-2');
-
-        console.log('Running Steam Link script');
-        const steamProcess = exec(`sh ${__dirname}/scripts/start_steam_link.sh`, (error, stdout, stderr) => {
-            if (error) {
-                console.error(error);
-                res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error);
-            } else {
-                res.send('Steam Link is now running');
-            }
-        });
-
-        steamProcess.stdout.pipe(process.stdout);
-        steamProcess.stderr.pipe(process.stderr);
     } else {
         res.sendStatus(StatusCodes.BAD_REQUEST);
     }
